@@ -24,6 +24,7 @@ public class Game {
 			sportsQuestions.addLast(("Sports Question " + i));
 			rockQuestions.addLast(createRockQuestion(i));
     	}
+    	System.out.println(">> Game-Vorbereitungen fertig");
     }
 
 	public String createRockQuestion(int index){
@@ -52,14 +53,18 @@ public class Game {
 	}
 
 	public void roll(int roll) {
-		System.out.println(players.get(currentPlayer) + " is the current player");
+		System.out.println("\n"+players.get(currentPlayer) + " is the current player");
 		System.out.println("They have rolled a " + roll);
 		
 		if (inPenaltyBox[currentPlayer]) {
 			if (roll % 2 != 0) {
+				//der Fall, der prüft ob ein Spieler aus der Penalty-Box rauskommt
+				//Spieler kommt nur raus, wenn er eine ungerade Zahl würfelt
 				isGettingOutOfPenaltyBox = true;
 				
 				System.out.println(players.get(currentPlayer) + " is getting out of the penalty box");
+				
+				//Wichtig, das Spielfeld besteht nur aus 12 ringförmiug angeordneten Feldern (quasi modulo)
 				places[currentPlayer] = places[currentPlayer] + roll;
 				if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
 				
@@ -67,11 +72,15 @@ public class Game {
 						+ "'s new location is " 
 						+ places[currentPlayer]);
 				System.out.println("The category is " + currentCategory());
+				
+				//FIXME: spieler muss vermutlich auch wieder aus penalty box geholt werden
+				//inPenaltyBox[currentPlayer] = false;
+				
 				askQuestion();
 			} else {
 				System.out.println(players.get(currentPlayer) + " is not getting out of the penalty box");
 				isGettingOutOfPenaltyBox = false;
-				}
+			}
 			
 		} else {
 		
@@ -122,6 +131,8 @@ public class Game {
 						+ purses[currentPlayer]
 						+ " Gold Coins.");
 				
+
+				
 				boolean winner = didPlayerWin();
 				currentPlayer++;
 				if (currentPlayer == players.size()) currentPlayer = 0;
@@ -161,8 +172,10 @@ public class Game {
 		if (currentPlayer == players.size()) currentPlayer = 0;
 		return true;
 	}
-
-
+	
+	/*
+	 * ist invertiert wegen der allumfassenden while schleife, die true braucht um durchlaufen zu können
+	 */
 	private boolean didPlayerWin() {
 		return !(purses[currentPlayer] == 6);
 	}
