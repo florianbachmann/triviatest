@@ -48,6 +48,7 @@ public class Game {
 		return true;
 	}
 	
+	//FIXME: 
 	public int howManyPlayers() {
 		return players.size();
 	}

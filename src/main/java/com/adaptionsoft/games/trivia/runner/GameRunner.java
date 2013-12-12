@@ -1,11 +1,21 @@
 
 package com.adaptionsoft.games.trivia.runner;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.util.Random;
 
 import com.adaptionsoft.games.uglytrivia.Game;
 
 /*
  * Wieviele Spieler: aktuell Spielen 3 Spieler mit, maximal sind 6 Spieler erlaubt
+ * 
+ * es sind in Wahrheit nur 5 Spieler erlaubt, da das 0. Element des player arrays nicht genutzt wird
+ * es müssen mindestens 2 Spieler sein
  * 
  * Welche Regeln:
  * Das Spiel wird mit genau 50 Fragen pro Kategorie initialisiert. Es gibt 4 Kategorien (Pop, Science, Sport & Rock).
@@ -35,15 +45,38 @@ import com.adaptionsoft.games.uglytrivia.Game;
 public class GameRunner {
 
 	private static boolean notAWinner;
+	public static long RANDOM_SEED = 35443;
 
 	public static void main(String[] args) {
+		long randomSeed = RANDOM_SEED;
+		String fileName = null;
+		runGame(randomSeed, fileName);		
+	}
+
+	public static void runGame(long randomSeed, String fileName) {
+		
+		if (fileName != null) {
+			 PrintStream ps;
+				try {
+					ps = new PrintStream(
+					                 new BufferedOutputStream(new FileOutputStream(
+					                 new File("./testtmp",fileName))), true);
+			        System.setOut(ps);         
+			        System.setErr(ps); 
+			        
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					return;
+				}
+		}
+		
 		Game aGame = new Game();
 		
 		aGame.add("Chet");
 		aGame.add("Pat");
 		aGame.add("Sue");
 		
-		Random rand = new Random();
+		Random rand = new Random(randomSeed);
 	
 		do {
 			
@@ -58,6 +91,5 @@ public class GameRunner {
 			
 			
 		} while (notAWinner);
-		
 	}
 }
