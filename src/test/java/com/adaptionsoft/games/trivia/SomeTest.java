@@ -17,7 +17,7 @@ public class SomeTest {
 	@Before
 	public void setup() throws IOException {
 		
-		//GameRunner.runGame(GameRunner.RANDOM_SEED, masterout);
+		GameRunner.runGame(GameRunner.RANDOM_SEED, masterout);
 		//String testContentActual = new String(Files.readAllBytes(Paths.get(masterout)));
 	
 	}

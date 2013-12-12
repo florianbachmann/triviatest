@@ -60,7 +60,7 @@ public class GameRunner {
 				try {
 					ps = new PrintStream(
 					                 new BufferedOutputStream(new FileOutputStream(
-					                 new File("./testtmp",fileName))), true);
+					                 new File(".",fileName))), true);
 			        System.setOut(ps);         
 			        System.setErr(ps); 
 			        
