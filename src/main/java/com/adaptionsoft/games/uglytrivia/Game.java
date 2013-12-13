@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Game {
-    ArrayList playerNames = new ArrayList();
+    private static final String CATEGORY_ROCK = "Rock";
+	private static final String CATEGORY_SPORTS = "Sports";
+	private static final String CATEGORY_POP = "Pop";
+	private static final String CATEGORY_SCIENCE = "Science";
+	
+	
+	ArrayList playerNames = new ArrayList();
     int[] playerGameboardPositions = new int[6];
     int[] playerPurses  = new int[6];
     boolean[] playerInPenaltyBox  = new boolean[6];
@@ -78,46 +84,38 @@ public class Game {
 	}
 
 
-	private void movePlayerToNewBoardPosition(int rollResult) {
-		playerGameboardPositions[currentPlayer] = playerGameboardPositions[currentPlayer] + rollResult;
-		if (playerGameboardPositions[currentPlayer] > 11) playerGameboardPositions[currentPlayer] = playerGameboardPositions[currentPlayer] - 12;
-		
-		System.out.println(playerNames.get(currentPlayer) 
-				+ "'s new location is " 
-				+ playerGameboardPositions[currentPlayer]);
-	}
 
 	private void askQuestion() {
 		String currentCategory = determineCurrentCategoryDependingOnGameboardPosition();
 		
 		System.out.println("The category is " + currentCategory);
 
-		if (currentCategory == "Pop") {
+		if (currentCategory == CATEGORY_POP) {
 			System.out.println(questionsPop.removeFirst());
 		}
-		else if (currentCategory == "Science") {
+		else if (currentCategory == CATEGORY_SCIENCE) {
 			System.out.println(questionsScience.removeFirst());
 		}
-		else if (currentCategory == "Sports") {
+		else if (currentCategory == CATEGORY_SPORTS) {
 			System.out.println(questionsSports.removeFirst());
 		}
-		else if (currentCategory == "Rock") {
+		else if (currentCategory == CATEGORY_ROCK) {
 			System.out.println(questionsRock.removeFirst());	
 		}	
 	}
 	
 	
 	private String determineCurrentCategoryDependingOnGameboardPosition() {
-		if (playerGameboardPositions[currentPlayer] == 0) return "Pop";
-		if (playerGameboardPositions[currentPlayer] == 4) return "Pop";
-		if (playerGameboardPositions[currentPlayer] == 8) return "Pop";
-		if (playerGameboardPositions[currentPlayer] == 1) return "Science";
-		if (playerGameboardPositions[currentPlayer] == 5) return "Science";
-		if (playerGameboardPositions[currentPlayer] == 9) return "Science";
-		if (playerGameboardPositions[currentPlayer] == 2) return "Sports";
-		if (playerGameboardPositions[currentPlayer] == 6) return "Sports";
-		if (playerGameboardPositions[currentPlayer] == 10) return "Sports";
-		return "Rock";
+		if (playerGameboardPositions[currentPlayer] == 0) return CATEGORY_POP;
+		if (playerGameboardPositions[currentPlayer] == 4) return CATEGORY_POP;
+		if (playerGameboardPositions[currentPlayer] == 8) return CATEGORY_POP;
+		if (playerGameboardPositions[currentPlayer] == 1) return CATEGORY_SCIENCE;
+		if (playerGameboardPositions[currentPlayer] == 5) return CATEGORY_SCIENCE;
+		if (playerGameboardPositions[currentPlayer] == 9) return CATEGORY_SCIENCE;
+		if (playerGameboardPositions[currentPlayer] == 2) return CATEGORY_SPORTS;
+		if (playerGameboardPositions[currentPlayer] == 6) return CATEGORY_SPORTS;
+		if (playerGameboardPositions[currentPlayer] == 10) return CATEGORY_SPORTS;
+		return CATEGORY_ROCK;
 	}
 
 	public boolean answerIsCorrectPlayerGetsGoldIfGettingOutOfPenaltyOrNotInPenaltyElseNothingAndGameStateChangesToNextPlayer() {
@@ -178,9 +176,24 @@ public class Game {
 	}
 
 
+	
+
+	private void movePlayerToNewBoardPosition(int rollResult) {
+		int newPosition = playerGameboardPositions[currentPlayer] + rollResult;
+		int maxPosition = 12;
+		playerGameboardPositions[currentPlayer] = circularMove(newPosition, maxPosition);
+		
+		System.out.println(playerNames.get(currentPlayer) 
+				+ "'s new location is " 
+				+ playerGameboardPositions[currentPlayer]);
+	}
+	
 	private void nextPlayer() {
-		currentPlayer++;
-		if (currentPlayer == playerNames.size()) currentPlayer = 0;
+		currentPlayer = circularMove(currentPlayer + 1, playerNames.size());
+	}
+	
+	private int circularMove(int newValue, int maxValue) {
+		return newValue % maxValue;
 	}
 	
 	public boolean answerIsWrongPlayerIsMovedToPenaltyBox(){
