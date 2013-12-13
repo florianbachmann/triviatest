@@ -61,7 +61,6 @@ public class Game {
 				//der Fall, der prüft ob ein Spieler aus der Penalty-Box rauskommt
 				//Spieler kommt nur raus, wenn er eine ungerade Zahl würfelt
 				isCurrentPlayerGettingOutOfPenaltyBox = true;
-				
 				System.out.println(playerNames.get(currentPlayer) + " is getting out of the penalty box");
 				
 				movePlayerToNewBoardPosition(rollResult);
@@ -93,14 +92,18 @@ public class Game {
 		
 		System.out.println("The category is " + currentCategory);
 
-		if (currentCategory == "Pop")
+		if (currentCategory == "Pop") {
 			System.out.println(questionsPop.removeFirst());
-		if (currentCategory == "Science")
+		}
+		else if (currentCategory == "Science") {
 			System.out.println(questionsScience.removeFirst());
-		if (currentCategory == "Sports")
+		}
+		else if (currentCategory == "Sports") {
 			System.out.println(questionsSports.removeFirst());
-		if (currentCategory == "Rock")
-			System.out.println(questionsRock.removeFirst());		
+		}
+		else if (currentCategory == "Rock") {
+			System.out.println(questionsRock.removeFirst());	
+		}	
 	}
 	
 	
@@ -118,6 +121,17 @@ public class Game {
 	}
 
 	public boolean answerIsCorrectPlayerGetsGoldIfGettingOutOfPenaltyOrNotInPenaltyElseNothingAndGameStateChangesToNextPlayer() {
+		/*
+		if (playerInPenaltyBox[currentPlayer] && !isCurrentPlayerGettingOutOfPenaltyBox){	
+			nextPlayer();
+			return true;
+		} else {
+			answerIsCorrentGetGold();
+			boolean notAWinner = isNotAWinner();
+			nextPlayer();
+			return notAWinner;
+		}
+		*/
 		if (playerInPenaltyBox[currentPlayer]){
 			if (isCurrentPlayerGettingOutOfPenaltyBox) {
 				answerIsCorrectGetGold();
