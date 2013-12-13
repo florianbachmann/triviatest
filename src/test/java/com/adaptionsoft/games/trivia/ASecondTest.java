@@ -42,8 +42,5 @@ public class ASecondTest {
 			assertEquals(fileContentExpected, testContentActual);
 		}
 		
-	
-	
-		
 	}
 }

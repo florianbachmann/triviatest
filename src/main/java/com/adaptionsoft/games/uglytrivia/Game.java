@@ -9,11 +9,7 @@ public class Game {
 	private static final String CATEGORY_POP = "Pop";
 	private static final String CATEGORY_SCIENCE = "Science";
 	
-	
-	ArrayList playerNames = new ArrayList();
-    int[] playerGameboardPositions = new int[6];
-    int[] playerPurses  = new int[6];
-    boolean[] playerInPenaltyBox  = new boolean[6];
+	ArrayList<Player> playerNames = new ArrayList<Player>();
     
     LinkedList questionsPop = new LinkedList();
     LinkedList questionsScience = new LinkedList();
@@ -21,7 +17,7 @@ public class Game {
     LinkedList questionsRock = new LinkedList();
     
     int currentPlayer = 0;
-    boolean isCurrentPlayerGettingOutOfPenaltyBox;
+   // Player currentPlayer = null;
     
     public Game() {
     	initializeGameQuestions();
@@ -43,12 +39,10 @@ public class Game {
 	}
 
 	public boolean addPlayer(String playerName) {
-	    playerNames.add(playerName);
-	    playerGameboardPositions[howManyPlayers()] = 0;
-	    playerPurses[howManyPlayers()] = 0;
-	    playerInPenaltyBox[howManyPlayers()] = false;
+		Player p = new Player(playerName);
+	    playerNames.add(p);
+
 	    
-	    System.out.println(playerName + " was added");
 	    System.out.println("They are player number " + playerNames.size());
 		return true;
 	}
@@ -59,21 +53,24 @@ public class Game {
 	}
 
 	public void movePlayerToNewBoardPositionIfNotInPenaltyBoxThenTryToGetOutAndAskQuestionElseAskQuestion(int rollResult) {
-		System.out.println("\n"+playerNames.get(currentPlayer) + " is the current player");
+		Player player = playerNames.get(currentPlayer);
+		
+		System.out.println("\n"+player + " is the current player");
 		System.out.println("They have rolled a " + rollResult);
 		
-		if (playerInPenaltyBox[currentPlayer]) {
+		if (player.isPenaltyBox()) {
 			if (rollResult % 2 != 0) {
 				//der Fall, der prüft ob ein Spieler aus der Penalty-Box rauskommt
 				//Spieler kommt nur raus, wenn er eine ungerade Zahl würfelt
-				isCurrentPlayerGettingOutOfPenaltyBox = true;
-				System.out.println(playerNames.get(currentPlayer) + " is getting out of the penalty box");
+				player.setGettingOutOfPenaltyBox(true);
+				System.out.println(player + " is getting out of the penalty box");
 				
 				movePlayerToNewBoardPosition(rollResult);
 				askQuestion();
 			} else {
-				System.out.println(playerNames.get(currentPlayer) + " is not getting out of the penalty box");
-				isCurrentPlayerGettingOutOfPenaltyBox = false;
+				System.out.println(player + " is not getting out of the penalty box");
+				player.setGettingOutOfPenaltyBox(false);
+				
 			}
 			
 		} else {
@@ -106,32 +103,25 @@ public class Game {
 	
 	
 	private String determineCurrentCategoryDependingOnGameboardPosition() {
-		if (playerGameboardPositions[currentPlayer] == 0) return CATEGORY_POP;
-		if (playerGameboardPositions[currentPlayer] == 4) return CATEGORY_POP;
-		if (playerGameboardPositions[currentPlayer] == 8) return CATEGORY_POP;
-		if (playerGameboardPositions[currentPlayer] == 1) return CATEGORY_SCIENCE;
-		if (playerGameboardPositions[currentPlayer] == 5) return CATEGORY_SCIENCE;
-		if (playerGameboardPositions[currentPlayer] == 9) return CATEGORY_SCIENCE;
-		if (playerGameboardPositions[currentPlayer] == 2) return CATEGORY_SPORTS;
-		if (playerGameboardPositions[currentPlayer] == 6) return CATEGORY_SPORTS;
-		if (playerGameboardPositions[currentPlayer] == 10) return CATEGORY_SPORTS;
+		Player player = playerNames.get(currentPlayer);
+		int currentPos = player.getGameboardPositions();
+		
+		if (currentPos == 0) return CATEGORY_POP;
+		if (currentPos == 4) return CATEGORY_POP;
+		if (currentPos == 8) return CATEGORY_POP;
+		if (currentPos == 1) return CATEGORY_SCIENCE;
+		if (currentPos == 5) return CATEGORY_SCIENCE;
+		if (currentPos == 9) return CATEGORY_SCIENCE;
+		if (currentPos == 2) return CATEGORY_SPORTS;
+		if (currentPos == 6) return CATEGORY_SPORTS;
+		if (currentPos == 10) return CATEGORY_SPORTS;
 		return CATEGORY_ROCK;
 	}
 
 	public boolean answerIsCorrectPlayerGetsGoldIfGettingOutOfPenaltyOrNotInPenaltyElseNothingAndGameStateChangesToNextPlayer() {
-		/*
-		if (playerInPenaltyBox[currentPlayer] && !isCurrentPlayerGettingOutOfPenaltyBox){	
-			nextPlayer();
-			return true;
-		} else {
-			answerIsCorrentGetGold();
-			boolean notAWinner = isNotAWinner();
-			nextPlayer();
-			return notAWinner;
-		}
-		*/
-		if (playerInPenaltyBox[currentPlayer]){
-			if (isCurrentPlayerGettingOutOfPenaltyBox) {
+		Player player = playerNames.get(currentPlayer);
+		if (player.isPenaltyBox()){
+			if (player.isGettingOutOfPenaltyBox()) {
 				answerIsCorrectGetGold();
 				
 				//FIXME: spieler muss vermutlich auch wieder aus penalty box geholt werden
@@ -157,21 +147,23 @@ public class Game {
 
 
 	private void answerIsCorrentGetGold() {
+		Player player = playerNames.get(currentPlayer);
+		player.addCoin();
 		System.out.println("Answer was corrent!!!!");
-		playerPurses[currentPlayer]++;
 		System.out.println(playerNames.get(currentPlayer) 
 				+ " now has "
-				+ playerPurses[currentPlayer]
+				+ player.getPurses()
 				+ " Gold Coins.");
 	}
 
 
 	private void answerIsCorrectGetGold() {
+		Player player = playerNames.get(currentPlayer);
+		player.addCoin();
 		System.out.println("Answer was correct!!!!");
-		playerPurses[currentPlayer]++;
 		System.out.println(playerNames.get(currentPlayer) 
 				+ " now has "
-				+ playerPurses[currentPlayer]
+				+ player.getPurses()
 				+ " Gold Coins.");
 	}
 
@@ -179,13 +171,17 @@ public class Game {
 	
 
 	private void movePlayerToNewBoardPosition(int rollResult) {
-		int newPosition = playerGameboardPositions[currentPlayer] + rollResult;
+		Player player = playerNames.get(currentPlayer);
+		
+		int newPosition = player.getGameboardPositions() + rollResult;
 		int maxPosition = 12;
-		playerGameboardPositions[currentPlayer] = circularMove(newPosition, maxPosition);
+		newPosition = circularMove(newPosition, maxPosition);
+		
+		player.setGameboardPositions(newPosition);
 		
 		System.out.println(playerNames.get(currentPlayer) 
 				+ "'s new location is " 
-				+ playerGameboardPositions[currentPlayer]);
+				+ player.getGameboardPositions());
 	}
 	
 	private void nextPlayer() {
@@ -199,8 +195,8 @@ public class Game {
 	public boolean answerIsWrongPlayerIsMovedToPenaltyBox(){
 		System.out.println("Question was incorrectly answered");
 		System.out.println(playerNames.get(currentPlayer)+ " was sent to the penalty box");
-		playerInPenaltyBox[currentPlayer] = true;
-		
+		Player player = playerNames.get(currentPlayer);
+		player.setPenaltyBox(true);
 		nextPlayer();
 		return true;
 	}
@@ -209,6 +205,8 @@ public class Game {
 	 * ist invertiert wegen der allumfassenden while schleife, die true braucht um durchlaufen zu können
 	 */
 	private boolean isNotAWinner() {
-		return !(playerPurses[currentPlayer] == 6);
+		Player player = playerNames.get(currentPlayer);
+		
+		return !(player.getPurses() == 6);
 	}
 }
