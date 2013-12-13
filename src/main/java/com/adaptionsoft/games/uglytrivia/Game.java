@@ -54,23 +54,22 @@ public class Game {
 	}
 
 	public void movePlayerToNewBoardPositionIfNotInPenaltyBoxThenTryToGetOutAndAskQuestionElseAskQuestion(int rollResult) {
-		Player player = currentPlayer;
 		
-		System.out.println("\n"+player + " is the current player");
+		System.out.println("\n"+currentPlayer + " is the current player");
 		System.out.println("They have rolled a " + rollResult);
 		
-		if (player.isPenaltyBox()) {
+		if (currentPlayer.isPenaltyBox()) {
 			if (rollResult % 2 != 0) {
 				//der Fall, der prüft ob ein Spieler aus der Penalty-Box rauskommt
 				//Spieler kommt nur raus, wenn er eine ungerade Zahl würfelt
-				player.setGettingOutOfPenaltyBox(true);
-				System.out.println(player + " is getting out of the penalty box");
+				currentPlayer.setGettingOutOfPenaltyBox(true);
+				System.out.println(currentPlayer + " is getting out of the penalty box");
 				
 				movePlayerToNewBoardPosition(rollResult);
 				askQuestion();
 			} else {
-				System.out.println(player + " is not getting out of the penalty box");
-				player.setGettingOutOfPenaltyBox(false);
+				System.out.println(currentPlayer + " is not getting out of the penalty box");
+				currentPlayer.setGettingOutOfPenaltyBox(false);
 				
 			}
 			
@@ -104,8 +103,7 @@ public class Game {
 	
 	
 	private String determineCurrentCategoryDependingOnGameboardPosition() {
-		Player player = currentPlayer;
-		int currentPos = player.getGameboardPositions();
+		int currentPos = currentPlayer.getGameboardPositions();
 		
 		if (currentPos == 0) return CATEGORY_POP;
 		if (currentPos == 4) return CATEGORY_POP;
@@ -120,9 +118,8 @@ public class Game {
 	}
 
 	public boolean answerIsCorrectPlayerGetsGoldIfGettingOutOfPenaltyOrNotInPenaltyElseNothingAndGameStateChangesToNextPlayer() {
-		Player player = currentPlayer;
-		if (player.isPenaltyBox()){
-			if (player.isGettingOutOfPenaltyBox()) {
+		if (currentPlayer.isPenaltyBox()){
+			if (currentPlayer.isGettingOutOfPenaltyBox()) {
 				answerIsCorrectGetGold();
 				
 				//FIXME: spieler muss vermutlich auch wieder aus penalty box geholt werden
@@ -148,23 +145,21 @@ public class Game {
 
 
 	private void answerIsCorrentGetGold() {
-		Player player = currentPlayer;
-		player.addCoin();
+		currentPlayer.addCoin();
 		System.out.println("Answer was corrent!!!!");
-		System.out.println(player 
+		System.out.println(currentPlayer 
 				+ " now has "
-				+ player.getPurses()
+				+ currentPlayer.getPurses()
 				+ " Gold Coins.");
 	}
 
 
 	private void answerIsCorrectGetGold() {
-		Player player = currentPlayer;
-		player.addCoin();
+		currentPlayer.addCoin();
 		System.out.println("Answer was correct!!!!");
-		System.out.println(player
+		System.out.println(currentPlayer
 				+ " now has "
-				+ player.getPurses()
+				+ currentPlayer.getPurses()
 				+ " Gold Coins.");
 	}
 
@@ -172,17 +167,15 @@ public class Game {
 	
 
 	private void movePlayerToNewBoardPosition(int rollResult) {
-		Player player = currentPlayer;
-		
-		int newPosition = player.getGameboardPositions() + rollResult;
+		int newPosition = currentPlayer.getGameboardPositions() + rollResult;
 		int maxPosition = 12;
 		newPosition = circularMove(newPosition, maxPosition);
 		
-		player.setGameboardPositions(newPosition);
+		currentPlayer.setGameboardPositions(newPosition);
 		
-		System.out.println(player 
+		System.out.println(currentPlayer 
 				+ "'s new location is " 
-				+ player.getGameboardPositions());
+				+ currentPlayer.getGameboardPositions());
 	}
 	
 	private void nextPlayer() {
@@ -197,10 +190,9 @@ public class Game {
 	}
 	
 	public boolean answerIsWrongPlayerIsMovedToPenaltyBox(){
-		Player player = currentPlayer;
 		System.out.println("Question was incorrectly answered");
-		System.out.println(player+ " was sent to the penalty box");
-		player.setPenaltyBox(true);
+		System.out.println(currentPlayer+ " was sent to the penalty box");
+		currentPlayer.setPenaltyBox(true);
 		nextPlayer();
 		return true;
 	}
@@ -209,7 +201,6 @@ public class Game {
 	 * ist invertiert wegen der allumfassenden while schleife, die true braucht um durchlaufen zu können
 	 */
 	private boolean isNotAWinner() {
-		Player player = currentPlayer;
-		return !(player.getPurses() == 6);
+		return !(currentPlayer.getPurses() == 6);
 	}
 }
