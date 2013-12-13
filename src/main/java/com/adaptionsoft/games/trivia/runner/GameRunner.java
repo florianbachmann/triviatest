@@ -83,7 +83,8 @@ public class GameRunner {
 			int roll = rand.nextInt(5) + 1;
 			aGame.movePlayerToNewBoardPositionIfNotInPenaltyBoxThenTryToGetOutAndAskQuestionElseAskQuestion(roll);
 			
-			if (rand.nextInt(9) == 7) {
+			boolean isAnswerWrong = rand.nextInt(9) == 7;
+			if (isAnswerWrong) {
 				notAWinner = aGame.answerIsWrongPlayerIsMovedToPenaltyBox();
 			} else {
 				notAWinner = aGame.answerIsCorrectPlayerGetsGoldIfGettingOutOfPenaltyOrNotInPenaltyElseNothingAndGameStateChangesToNextPlayer();

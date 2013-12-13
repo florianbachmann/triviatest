@@ -181,6 +181,7 @@ public class Game {
 	private void nextPlayer() {
 		int maxPlayers = allPlayers.size();
 
+		//allPlayers (0 "Pat", 1 "Sue",2 "Chat")
 		currentPlayerPosInArray = circularMove(currentPlayerPosInArray + 1, maxPlayers);
 		currentPlayer = allPlayers.get(currentPlayerPosInArray);
 	}
